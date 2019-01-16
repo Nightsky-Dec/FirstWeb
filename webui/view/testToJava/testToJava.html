@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="../../css/css.css"/>
+</head>
+<body>
+<div id="app">
+    <!-- users -->
+    <div class="users_box">
+        <div class="users_box_title">
+            <input type="button" value="新增User" id="addNew">
+        </div>
+        <div class="table_box">
+            <table id="users">
+                <tr style="background: darkgray;"><td>id</td><td>name</td><td>age</td><td>修改</td><td>删除</td></tr>
+            </table>
+
+            <table id="user">
+                <tr style="background: darkgray;"><td>id</td><td>name</td><td>age</td><td>操作</td></tr>
+            </table>
+        </div>
+
+        <div class="edit_box">
+            <span>编辑</span>
+            <div class="input_box">
+                <input type="hidden" id="edit_id">
+                <label for="edit_name">name</label><input type="text" id="edit_name">
+                <label for="edit_age">age</label><input type="text" id="edit_age">
+            </div>
+            <div class="btn_box">
+                <input type="button" value="Add" id="editAdd">
+                <input type="button" value="update" id="editUpdate">
+                <input type="button" value="cancel" id="editCancel">
+            </div>
+        </div>
+    </div>
+
+    <!-- groups -->
+    <div class="groups_box">
+        <table id="groups">
+            <tr style="background: darkgray;"><td>id</td><td>name</td></tr>
+        </table>
+    </div>
+</div>
+
+<script src="../../js/jquery-1.11.0.js"></script>
+<script src="../../js/underscore-min.js"></script>
+<script src="index.js"></script>
+<script src="try.js"></script>
+<script src="groups.js"></script>
+</body>
+</html>
