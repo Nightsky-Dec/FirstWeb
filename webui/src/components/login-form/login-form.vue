@@ -20,6 +20,8 @@
   </Form>
 </template>
 <script>
+import { getMD5 } from '../../libs/validate'
+
 export default {
   name: 'LoginForm',
   props: {
@@ -62,7 +64,7 @@ export default {
         if (valid) {
           this.$emit('on-success-valid', {
             userName: this.form.userName,
-            password: this.form.password
+            password: getMD5(this.form.password)
           })
         }
       })
