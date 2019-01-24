@@ -4,6 +4,7 @@ import com.example.demo.bean.RegisterFormBean;
 import com.example.demo.domain.LoginUser;
 import com.example.demo.service.LoginUserService;
 import com.example.demo.service.RedisService;
+import com.example.demo.util.RedisUtils;
 import com.example.demo.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +30,8 @@ public class LoginUserController {
     private LoginUserService loginUserService;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private RedisUtils redisUtils;
 
     // 获取登录用户
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -49,14 +52,15 @@ public class LoginUserController {
             if (userName.equals(name) && userPass.equals(pass)) {
                 // 生成token传给前端存储做登录状态-暂存入数据库
                 String token = WebUtils.makeId();
-                user.setToken(token);
-                loginUserService.updataLoginToken(user);
+//                user.setToken(token);
+//                loginUserService.updataLoginToken(user);
 
 //                Boolean setToken = redisService.set(token, token);
 //                if (setToken) {
 //                    Object i = redisService.get(token);
 //                    System.out.println(i);
 //                }
+                redisUtils.set(token,token);
 
                 result.put("token", token);
                 result.put("status", true);
@@ -90,13 +94,19 @@ public class LoginUserController {
         String token = req.getHeader("x-auth-token");
         System.out.println("token: " + token);
 
+        Object tk = redisUtils.get(token);
+        System.out.println("tk: " + tk);
+
         Map<String, Object> result = new HashMap<>();
         // 查找数据库中对应的用户
-        LoginUser user = loginUserService.getUserByToken(token);
-        if (user != null) {
+//        LoginUser user = loginUserService.getUserByToken(token);
+
+        if (tk != null) {
             try {
-                user.setToken(null);
-                loginUserService.updataLoginToken(user);
+//                user.setToken(null);
+//                loginUserService.updataLoginToken(user);
+                redisUtils.del(token);
+
                 result.put("status", true);
                 result.put("message", "注销成功！！");
                 return result;
