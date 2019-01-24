@@ -18,7 +18,7 @@ export default {
     avatorImgPath: '',
     token: getToken(),
     access: '',
-    hasGetInfo: false,
+    // hasGetInfo: false,
     unreadCount: 0,
     messageUnreadList: [],
     messageReadedList: [],
@@ -78,8 +78,13 @@ export default {
       return new Promise((resolve, reject) => {
         login(loginParams).then(res => {
           const data = res.data
+          commit('setUserId', data.uid)
           commit('setToken', data.token)
-          resolve()
+          commit('setUserName', data.userName)
+          commit('setAvator', data.avator || '')
+          commit('setAccess', data.access || [])
+          // commit('setHasGetInfo', true)
+          resolve(res)
         }).catch(err => {
           reject(err)
         })
@@ -88,20 +93,24 @@ export default {
     // 退出登录
     handleLogOut ({ state, commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token).then(() => {
+        logout(state.token).then((res) => {
           commit('setToken', '')
           commit('setAccess', [])
-          resolve()
+          resolve(res)
         }).catch(err => {
           reject(err)
         })
-        // 如果你的退出登录无需请求接口，则可以直接使用下面三行代码而无需使用logout调用接口
-        // commit('setToken', '')
-        // commit('setAccess', [])
-        // resolve()
       })
     },
-    // 获取用户相关信息
+    // 20分钟不做操作，自动退出登录
+    // redirectToLogin() {
+    //   this.$router.replace('/login')
+    //   return new Promise(resolve => {
+    //     auth.removeToken()
+    //     resolve()
+    //   })
+    // },
+    // 获取用户相关信息 - 暂不用
     getUserInfo ({ state, commit }) {
       return new Promise((resolve, reject) => {
         try {
@@ -111,7 +120,7 @@ export default {
             commit('setUserName', data.name)
             commit('setUserId', data.user_id)
             commit('setAccess', data.access)
-            commit('setHasGetInfo', true)
+            // commit('setHasGetInfo', true)
             resolve(data)
           }).catch(err => {
             reject(err)

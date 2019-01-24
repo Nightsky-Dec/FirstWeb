@@ -1,8 +1,9 @@
 import axios from 'axios'
 import store from '@/store'
 // import { Spin } from 'iview'
+
 const addErrorLog = errorInfo => {
-  const { statusText, status, request: { responseURL } } = errorInfo
+  const { statusText, status, request: { responseURL }} = errorInfo
   let info = {
     type: 'ajax',
     code: status,
@@ -13,11 +14,11 @@ const addErrorLog = errorInfo => {
 }
 
 class HttpRequest {
-  constructor (baseUrl = baseURL) {
+  constructor(baseUrl) {
     this.baseUrl = baseUrl
     this.queue = {}
   }
-  getInsideConfig () {
+  getInsideConfig() {
     const config = {
       baseURL: this.baseUrl,
       headers: {
@@ -26,13 +27,13 @@ class HttpRequest {
     }
     return config
   }
-  destroy (url) {
+  destroy(url) {
     delete this.queue[url]
     if (!Object.keys(this.queue).length) {
       // Spin.hide()
     }
   }
-  interceptors (instance, url) {
+  interceptors(instance, url) {
     // 请求拦截
     instance.interceptors.request.use(config => {
       // 添加全局的loading...
@@ -64,11 +65,16 @@ class HttpRequest {
       return Promise.reject(error)
     })
   }
-  request (options) {
+  request(options) {
     const instance = axios.create()
+    if (store.state.user.token) {
+      instance.defaults.headers.common['X-Auth-Token'] = store.state.user.token;
+    }
+    instance.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest'
     options = Object.assign(this.getInsideConfig(), options)
     this.interceptors(instance, options.url)
     return instance(options)
   }
 }
 export default HttpRequest
+

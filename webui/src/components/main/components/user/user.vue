@@ -36,7 +36,7 @@ export default {
     ]),
     logout () {
       this.handleLogOut().then(() => {
-        this.$router.push({
+        this.$router.replace({
           name: 'login'
         })
       })

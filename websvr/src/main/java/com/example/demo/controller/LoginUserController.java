@@ -3,6 +3,7 @@ package com.example.demo.controller;
 import com.example.demo.bean.RegisterFormBean;
 import com.example.demo.domain.LoginUser;
 import com.example.demo.service.LoginUserService;
+import com.example.demo.service.RedisService;
 import com.example.demo.util.WebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -26,6 +27,8 @@ public class LoginUserController {
      */
     @Autowired
     private LoginUserService loginUserService;
+    @Autowired
+    private RedisService redisService;
 
     // 获取登录用户
     @RequestMapping(value = "/login", method = RequestMethod.POST)
@@ -48,9 +51,16 @@ public class LoginUserController {
                 String token = WebUtils.makeId();
                 user.setToken(token);
                 loginUserService.updataLoginToken(user);
+
+//                Boolean setToken = redisService.set(token, token);
+//                if (setToken) {
+//                    Object i = redisService.get(token);
+//                    System.out.println(i);
+//                }
+
                 result.put("token", token);
                 result.put("status", true);
-                result.put("user", userName);
+                result.put("userName", userName);
                 result.put("uid", uid);
                 return result;
             } else {
@@ -74,20 +84,23 @@ public class LoginUserController {
 
     // 用户登出
     @RequestMapping(value = "/logout", method = RequestMethod.POST)
-    public Map<String, Object> LogoutUser(@RequestBody LoginUser params) {
+    public Map<String, Object> LogoutUser(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+//        showHttpServletHeader(req, res);
+        String token = req.getHeader("x-auth-token");
+        System.out.println("token: " + token);
+
         Map<String, Object> result = new HashMap<>();
-        String loginName = params.getName();
-        String loginToken = params.getToken();
         // 查找数据库中对应的用户
-        LoginUser user = loginUserService.getLoginUser(loginName);
+        LoginUser user = loginUserService.getUserByToken(token);
         if (user != null) {
-            if (user.getToken().equals(loginToken)) {
+            try {
                 user.setToken(null);
                 loginUserService.updataLoginToken(user);
                 result.put("status", true);
                 result.put("message", "注销成功！！");
                 return result;
-            } else {
+            } catch (Exception e) {
                 result.put("status", false);
                 result.put("message", "注销失败！！");
                 return result;
@@ -208,7 +221,7 @@ public class LoginUserController {
         while (reqHeadInfos.hasMoreElements()) {
             String headName = (String) reqHeadInfos.nextElement();
             String headValue = req.getHeader(headName); // 根据请求头的名字获取对应的请求头的值
-            System.out.println(headValue);
+            System.out.println(headName + ": " + headValue);
 //            out.write(headName + ": " + headValue);
 //            out.write("<br/>");
         }

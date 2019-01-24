@@ -23,6 +23,10 @@ public class LoginUserService {
         return loginUserDao.getLoginUser(name);
     }
 
+    public LoginUser getUserByToken(String name) {
+        return loginUserDao.getUserByToken(name);
+    }
+
     // 注册登录用户
     public void addLoginUser(LoginUser loginUser) {
         loginUserDao.addLoginUser(loginUser);

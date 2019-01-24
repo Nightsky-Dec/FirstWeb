@@ -45,15 +45,16 @@ export default {
         pass: password
       }
       this.loading = true
-
       this.handleLogin(params).then(res => {
         this.loading = false
         console.log(res)
-        // this.getUserInfo().then(res => {
-        //   this.$router.push({
-        //     name: this.$config.homeName
-        //   })
-        // })
+        /**
+         * 登录信息配置在module\user.js
+         * 登录验证在router\index.js
+         * */
+        this.$router.replace({
+          name: this.$config.homeName
+        })
       }).catch(res => {
         this.loading = false
       })

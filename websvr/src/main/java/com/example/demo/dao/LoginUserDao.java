@@ -15,6 +15,10 @@ public interface LoginUserDao {
     @Select("select * from user_info where name=#{name}")
     public LoginUser getLoginUser(String name);
 
+    // 根据token查找用户，确定用户是否在线
+    @Select("select * from user_info where token=#{token}")
+    public LoginUser getUserByToken(String token);
+
     // 增添用户
     @Insert("insert into user_info(name,pass,email,age) value(#{name},#{pass},#{email},#{age})")
     public void addLoginUser(LoginUser loginUser);
