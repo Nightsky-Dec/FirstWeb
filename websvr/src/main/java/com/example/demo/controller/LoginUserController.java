@@ -51,16 +51,16 @@ public class LoginUserController {
             int uid = user.getUid();
             if (userName.equals(name) && userPass.equals(pass)) {
                 // 生成token传给前端存储做登录状态-暂存入数据库
-                String token = WebUtils.makeId();
+//                String token = WebUtils.makeId();
 //                user.setToken(token);
 //                loginUserService.updataLoginToken(user);
-
-//                Boolean setToken = redisService.set(token, token);
-//                if (setToken) {
-//                    Object i = redisService.get(token);
-//                    System.out.println(i);
-//                }
+                String token = "testdddd";
+                /**
+                 * redis存储token，注意redis的写权限
+                 * */
                 redisUtils.set(token,token);
+//                Object redisTK = redisService.get(token);
+//                System.out.println("redisTK:" + redisTK);
 
                 result.put("token", token);
                 result.put("status", true);
