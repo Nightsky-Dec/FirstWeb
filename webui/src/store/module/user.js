@@ -9,12 +9,12 @@ import {
   restoreTrash,
   getUnreadCount
 } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, getToken, getUser, setUser } from '@/libs/util'
 
 export default {
   state: {
-    userName: '',
-    userId: '',
+    userName: getUser('userName'),
+    userId: getUser('uid'),
     avatorImgPath: '',
     token: getToken(),
     access: '',
@@ -78,12 +78,14 @@ export default {
       return new Promise((resolve, reject) => {
         login(loginParams).then(res => {
           const data = res.data
+          console.log(data)
           commit('setUserId', data.uid)
           commit('setToken', data.token)
           commit('setUserName', data.userName)
           commit('setAvator', data.avator || '')
           commit('setAccess', data.access || [])
           // commit('setHasGetInfo', true)
+          setUser(data)
           resolve(res)
         }).catch(err => {
           reject(err)
@@ -102,16 +104,9 @@ export default {
         })
       })
     },
-    // 20分钟不做操作，自动退出登录
-    // redirectToLogin() {
-    //   this.$router.replace('/login')
-    //   return new Promise(resolve => {
-    //     auth.removeToken()
-    //     resolve()
-    //   })
-    // },
     // 获取用户相关信息 - 暂不用
     getUserInfo ({ state, commit }) {
+      console.log('=====================')
       return new Promise((resolve, reject) => {
         try {
           getUserInfo(state.token).then(res => {

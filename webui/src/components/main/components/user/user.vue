@@ -6,6 +6,9 @@
       </Badge>
       <Icon :size="18" type="md-arrow-dropdown"></Icon>
       <DropdownMenu slot="list">
+        <DropdownItem name="user">
+          个人中心
+        </DropdownItem>
         <DropdownItem name="message">
           消息中心<Badge style="margin-left: 10px" :count="messageUnreadCount"></Badge>
         </DropdownItem>
@@ -46,11 +49,18 @@ export default {
         name: 'message_page'
       })
     },
+    user () {
+      this.$router.push({
+        name: 'user_contact'
+      })
+    },
     handleClick (name) {
       switch (name) {
         case 'logout': this.logout()
           break
         case 'message': this.message()
+          break
+        case 'user': this.user()
           break
       }
     }

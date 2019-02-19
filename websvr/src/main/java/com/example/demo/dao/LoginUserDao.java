@@ -12,20 +12,24 @@ public interface LoginUserDao {
     public List<LoginUser> getUsers();
 
     // 根据用户名查找用户
+    @Select("select * from user_info where uid=#{uid}")
+    public LoginUser getUserByUid(int uid);
+
+    // 根据用户名查找用户
     @Select("select * from user_info where name=#{name}")
-    public LoginUser getLoginUser(String name);
+    public LoginUser getUserByName(String name);
 
     // 根据token查找用户，确定用户是否在线
     @Select("select * from user_info where token=#{token}")
     public LoginUser getUserByToken(String token);
 
     // 增添用户
-    @Insert("insert into user_info(name,pass,email,age) value(#{name},#{pass},#{email},#{age})")
-    public void addLoginUser(LoginUser loginUser);
+    @Insert("inster into user_info(name,pass.email,age,phone,avator,remakes) value(#{name},#{pass},#{email},#{age},#{phone},#{avator},#{remakes})")
+    public void addUser(LoginUser loginUser);
 
     // 修改用户
-    @Update("update user_info set name=#{name},pass=#{pass},email=#{email},age=#{age} where uid=#{uid}")
-    public void updataLoginUser(LoginUser loginUser);
+    @Update("update user_info set name=#{name},pass=#{pass},email=#{email},age=#{age},phone=#{phone},avator=#{avator},remakes=#{remakes} where uid=#{uid}")
+    public void updataUser(LoginUser loginUser);
 
     // 删除用户
     @Delete("delete from user_info where uid=#{uid}")

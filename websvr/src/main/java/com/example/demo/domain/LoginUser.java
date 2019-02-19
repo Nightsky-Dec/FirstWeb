@@ -16,6 +16,9 @@ public class LoginUser {
     private String confPass;
     private String email;
     private String age;
+    private String phone;
+    private String avator;
+    private String remakes;
     private String token;
 
     public String getToken() {
@@ -138,6 +141,30 @@ public class LoginUser {
         this.age = age;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getAvator() {
+        return avator;
+    }
+
+    public void setAvator(String avator) {
+        this.avator = avator;
+    }
+
+    public String getRemakes() {
+        return remakes;
+    }
+
+    public void setRemakes(String remakes) {
+        this.remakes = remakes;
+    }
+
     @Override
     public String toString() {
         String info = "User【";
@@ -155,6 +182,15 @@ public class LoginUser {
         }
         if (age != null) {
             info += "age=" + age + ";";
+        }
+        if (phone != null) {
+            info += "phone=" + phone + ";";
+        }
+        if (avator !=null) {
+            info += "avator=" + avator + ";";
+        }
+        if (remakes !=null) {
+            info += "remakes=" + remakes + ";";
         }
         info += "】";
         return info;

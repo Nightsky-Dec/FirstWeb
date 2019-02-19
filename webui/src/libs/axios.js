@@ -51,6 +51,13 @@ class HttpRequest {
       const { data, status } = res
       return { data, status }
     }, error => {
+      console.log(error)
+      if (error.response.status === 401) {
+        store.dispatch('handleLogOut').then(() => {
+          location.reload()
+        })
+        return
+      }
       this.destroy(url)
       let errorInfo = error.response
       if (!errorInfo) {

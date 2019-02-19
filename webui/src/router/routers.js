@@ -88,6 +88,15 @@ export default [
         },
         children: [
             {
+                path: 'user_contact',
+                name: 'user_contact',
+                meta: {
+                    icon: 'md-contact',
+                    title: '个人中心'
+                },
+                component: () => import('@/view/single-page/user/userContact.vue')
+            },
+            {
                 path: 'message_page',
                 name: 'message_page',
                 meta: {

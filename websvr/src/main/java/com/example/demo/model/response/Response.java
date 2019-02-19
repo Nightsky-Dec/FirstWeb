@@ -1,4 +1,4 @@
-package com.example.demo.model;
+package com.example.demo.model.response;
 
 public class Response {
     private Integer status = 1;

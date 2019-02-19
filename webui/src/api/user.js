@@ -10,11 +10,11 @@ export const login = (params) => {
 }
 
 // 暂时不用
-export const getUserInfo = (token) => {
+export const getUserInfo = (name) => {
   return axios.request({
-    url: 'get_info',
+    url: 'user/user',
     params: {
-      token
+      name
     },
     method: 'get'
   })
@@ -24,6 +24,22 @@ export const logout = (token) => {
   return axios.request({
     url: 'user/logout',
     method: 'post'
+  })
+}
+
+export const addUser = (data) => {
+  return axios.request({
+    url: 'user/add',
+    method: 'post',
+    data: data
+  })
+}
+
+export const updataUser = (data) => {
+  return axios.request({
+    url: 'user/updata',
+    method: 'post',
+    data: data
   })
 }
 

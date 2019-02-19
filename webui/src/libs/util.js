@@ -4,6 +4,18 @@ import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 const { title, cookieExpires, useI18n } = config
 
+export const setUser = (user) => {
+  let user_info = JSON.stringify(user)
+  Cookies.set('user', user_info, { expires: cookieExpires || 1 })
+}
+
+export const getUser = (tag) => {
+  let user = JSON.parse(Cookies.get('user'))
+  let obj = tag ? user[tag] : user
+  if (obj) return obj
+  else return false
+}
+
 export const TOKEN_KEY = 'token'
 
 export const setToken = (token) => {

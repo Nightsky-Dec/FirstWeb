@@ -18,23 +18,29 @@ public class LoginUserService {
         return loginUserDao.getUsers();
     }
 
+    // 根据Uid查找登录用户
+    public LoginUser getUserByUid(int uid) {
+        return loginUserDao.getUserByUid(uid);
+    }
+
     // 根据用户名查找登录用户
-    public LoginUser getLoginUser(String name) {
-        return loginUserDao.getLoginUser(name);
+    public LoginUser getUserByName(String name) {
+        return loginUserDao.getUserByName(name);
     }
 
     public LoginUser getUserByToken(String name) {
         return loginUserDao.getUserByToken(name);
     }
 
-    // 注册登录用户
+    // 添加用户
     public void addLoginUser(LoginUser loginUser) {
-        loginUserDao.addLoginUser(loginUser);
+        loginUserDao.addUser(loginUser);
     }
 
-    // 修改登录用户
-    public void updateLoginUser(LoginUser loginUser) {
-        loginUserDao.updataLoginUser(loginUser);
+    // 修改用户
+    public void updateUser(LoginUser loginUser) {
+        System.out.println("service:" + loginUser);
+        loginUserDao.updataUser(loginUser);
     }
 
     // 删除登录用户

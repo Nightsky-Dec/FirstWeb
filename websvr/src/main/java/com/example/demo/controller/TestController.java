@@ -2,13 +2,12 @@ package com.example.demo.controller;
 
 import com.example.demo.domain.Groups;
 import com.example.demo.domain.Person;
-import com.example.demo.model.Response;
+import com.example.demo.model.response.Response;
 import com.example.demo.service.GroupsService;
 import com.example.demo.service.PersonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
