@@ -1,11 +1,12 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.LoginUser;
+import com.example.demo.domain.User;
 import com.example.demo.model.response.ObjectResponse;
 import com.example.demo.model.response.Response;
-import com.example.demo.service.LoginUserService;
+import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -19,13 +20,16 @@ import java.util.Map;
 @RequestMapping(value = "/user")
 public class UserController {
     @Autowired
-    private LoginUserService loginUserService;
+    private UserService userService;
+
+    @Autowired
+    private UploadController uploadController;
 
     // 查看用户
     @RequestMapping(value = "/user", method = RequestMethod.GET)
     public ObjectResponse getUser(@RequestParam String name) {
         ObjectResponse response = new ObjectResponse();
-        LoginUser user = loginUserService.getUserByName(name);
+        User user = userService.getUserByName(name);
         response.setData(user);
         return response;
     }
@@ -35,7 +39,7 @@ public class UserController {
     public Map<String, Object> getUsers() {
         Map<String, Object> result = new HashMap<>();
         try {
-            List<LoginUser> users = loginUserService.getUsers();
+            List<User> users = userService.getUsers();
             result.put("list", users);
             result.put("status", 1);
         } catch (Exception e) {
@@ -47,12 +51,12 @@ public class UserController {
 
     // 注册用户
     @RequestMapping(value = "/add", method = RequestMethod.POST)
-    public Map<String, Object> addLoginUser(@RequestBody LoginUser params, HttpServletRequest req, HttpServletResponse res)
+    public Map<String, Object> addLoginUser(@RequestBody User params, HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException{
         Map<String, Object> result = new HashMap<>();
 
         // 校验数据库中是否已存在同名用户
-        LoginUser hasName = loginUserService.getUserByName(params.getName());
+        User hasName = userService.getUserByName(params.getName());
         if (hasName != null) {
             result.put("message", "该用户名已注册！！");
             result.put("status", false);
@@ -68,7 +72,7 @@ public class UserController {
         try {
             // 调用接口时间
 //            SimpleDateFormat addTime = new SimpleDateFormat("yyyy-MM-dd");
-            loginUserService.addLoginUser(params);
+            userService.addLoginUser(params);
             result.put("message", "注册成功！！");
             result.put("status", true);
             return result;
@@ -82,11 +86,11 @@ public class UserController {
 
     // 修改用户
     @RequestMapping(value = "/updata", method = RequestMethod.POST)
-    public Response updataLoginUser(@RequestBody LoginUser loginUser, HttpServletRequest req) {
+    public Response updataLoginUser(@RequestBody User loginUser, HttpServletRequest req) {
         Response response = new Response();
 
         int uid = loginUser.getUid();
-        LoginUser user = loginUserService.getUserByUid(uid);
+        User user = userService.getUserByUid(uid);
         /**
          * 用户存在则继续操作
          * 客户端数据中，存在的项替换数据库中的数据，否则沿用数据库中的数据
@@ -120,7 +124,7 @@ public class UserController {
         }
 
         try {
-            loginUserService.updateUser(user);
+            userService.updateUser(user);
             return response;
         } catch (Exception e) {
             response.setStatus(0);
@@ -129,10 +133,31 @@ public class UserController {
         }
     }
 
+    /**
+     * 上传用户头像
+     * */
+    @RequestMapping(value = "/image", method = RequestMethod.POST)
+    public Response updataImg(@RequestParam("imageFiles") MultipartFile[] imageFiles, @RequestParam("uid") Integer uid) throws Exception {
+        Response response = new Response();
+        // 图片存储在file_path路径的user目录下
+        String pathTo = "\\userImg";
+        try {
+            // 调用UploadController中的上传图片
+            Response result = uploadController.saveImg(imageFiles, uid, pathTo);;
+            response.setStatus(result.getStatus());
+            response.setMassage(result.getMassage());
+        } catch (Exception e) {
+            response.setStatus(0);
+            response.setMassage("error:" + e);
+        }
+
+        return response;
+    }
+
     // 删除用户
     @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-    public LoginUser delLoginUser(@RequestParam Integer id) {
-        loginUserService.delLoginUser(id);
+    public User delLoginUser(@RequestParam Integer id) {
+        userService.delLoginUser(id);
         return null;
     }
 }

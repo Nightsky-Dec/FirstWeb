@@ -35,12 +35,20 @@
     </Row>
     <Modal
       v-model="modleAvator"
+      @on-ok="saveAvator"
+      @on-cancel="cancel"
       title="修改用户头像">
-      <Cropper
-        :src="forms.avator"
-        crop-button-text="确认提交"
-        @on-crop="saveAvator"
-      ></Cropper>
+      <!--<Cropper-->
+        <!--:src="forms.avator"-->
+        <!--crop-button-text="确认提交"-->
+        <!--@on-crop="saveAvator"-->
+      <!--&gt;</Cropper>-->
+      <Upload
+        :before-upload="handleUpload"
+        action="//jsonplaceholder.typicode.com/posts/">
+        <Button icon="ios-cloud-upload-outline">Select the file to upload</Button>
+      </Upload>
+      <div v-if="file !== null">Upload file: {{ file.name }}</div>
     </Modal>
     <Modal
       v-model="modleInfo"
@@ -66,7 +74,7 @@
 </template>
 
 <script>
-  import { getUserInfo, updataUser } from "../../../api/user";
+  import { getUserInfo, updataUser, updataImage } from "../../../api/user";
   import Cropper from '@/components/cropper'
 
   export default {
@@ -77,19 +85,20 @@
     data() {
       return {
         user: {
-          name: '1',
+          name: '',
           email: '',
           phone: '',
           remarks: '',
           avator: ''
         },
         forms: {
-          name: '1',
+          name: '',
           email: '',
           phone: '',
           remarks: '',
           avator: ''
         },
+        file: null,
         modleAvator: false,
         modleInfo: false,
         ruleValidate: {}
@@ -102,18 +111,16 @@
       init() {
         // get user
         getUserInfo(this.$store.state.user.userName).then(res => {
-          this.user = res.data.data
+          this.user = res.data.data.name ? res.data.data : {}
         }).catch(res => {
           this.$Notice.error({
             title: '获取用户信息失败！！'
           })
         })
       },
-      handleCroped() {
-
-      },
       showModel(type) {
         this.forms = JSON.parse(JSON.stringify(this.user))
+
         switch (type) {
           case 'info':
             this.modleInfo = true
@@ -123,20 +130,31 @@
             break
         }
       },
-      saveAvator(data) {
-        this.$refs['forms'].validate((valid) => {
-          if (valid) {
-            console.log(data)
-            const formData = new FormData()
-            formData.append('croppedImg', data)
-            console.log(formData)
-            let params = {
-              uid: this.forms.uid,
-              avator: formData
-            }
-            console.log(params)
-            // this.save(params)
+      handleUpload(file) {
+        this.file = file;
+        return false;
+      },
+      saveAvator(file) {
+        const formData = new FormData()
+        formData.append('uid', this.user.uid)
+        formData.append('imageFiles', this.file)
+        updataImage(formData).then(res => {
+          console.log(res)
+          if(res.data.status) {
+            this.$Notice.success({
+              title: '修改成功！'
+            })
+            this.modleInfo = false
+            this.init()
+          } else {
+            this.$Notice.error({
+              title: '修改失败！'
+            })
           }
+        }).catch(err => {
+          this.$Notice.error({
+            title: '修改失败！'
+          })
         })
       },
       saveInfo() {
@@ -149,27 +167,24 @@
               phone: this.forms.phone,
               remakes: this.forms.remakes
             }
-            this.save(params)
-          }
-        })
-      },
-      save(params) {
-        updataUser(params).then(res => {
-          if (res.data.status) {
-            this.$Notice.success({
-              title: '修改成功！'
+            updataUser(params).then(res => {
+              if (res.data.status) {
+                this.$Notice.success({
+                  title: '修改成功！'
+                })
+                this.modleInfo = false
+                this.init()
+              } else {
+                this.$Notice.error({
+                  title: '修改失败！'
+                })
+              }
+            }).catch(err => {
+              this.$Notice.error({
+                title: '修改失败！'
+              })
             })
-            this.modleInfo = false
-            this.init()
-          } else {
-            this.$Notice.success({
-              title: '修改失败！'
-            })
           }
-        }).catch(res => {
-          this.$Notice.success({
-            title: '修改失败！'
-          })
         })
       },
       cancel() {

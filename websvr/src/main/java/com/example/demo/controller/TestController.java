@@ -20,7 +20,7 @@ public class TestController {
     @Autowired
     private GroupsService groupsService;
 
-    // Users
+    // TestUsers
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<Person> getUsers() { return personService.getUsers(); }
 

@@ -16,6 +16,7 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     /**
      * 在视图函数之前执行
+     * 用于用户认证校验、用户权限校验
      * 返回true, 继续执行视图函数
      * 返回false, 终止请求流程
      * 本函数的作用,:拒绝特定时间sentinel:forbidden:hours; 特定用户的sentinel:forbidden:users请求, 并记录startTime
@@ -44,7 +45,8 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 在视图函数之后执行，ModelAndView返回之前调用这个方法
+     * 在执行handler返回modelAndView之前来执行
+     * 如果需要向页面提供一些公用 的数据或配置一些视图信息，使用此方法实现 从modelAndView入手
      * 本函数的作用:计算处理时间
      * */
     @Override
@@ -53,7 +55,9 @@ public class AuthInterceptor implements HandlerInterceptor {
     }
 
     /**
-     * 视图函数执行成功后执行
+     * 执行handler之后执行此方法
+     * 作系统 统一异常处理，进行方法执行性能监控，在preHandle中设置一个时间点，在afterCompletion设置一个时间，两个时间点的差就是执行时长
+     * 实现 系统 统一日志记录
      * */
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {

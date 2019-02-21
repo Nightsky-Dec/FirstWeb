@@ -1,5 +1,8 @@
 import axios from '@/libs/api.request'
 
+/**
+ * 登录
+ * */
 export const login = (params) => {
   console.log(params)
   return axios.request({
@@ -9,7 +12,21 @@ export const login = (params) => {
   })
 }
 
-// 暂时不用
+/**
+ * 登出
+ * @param token
+ * */
+export const logout = (token) => {
+  return axios.request({
+    url: 'user/logout',
+    method: 'post'
+  })
+}
+
+/**
+ * 获取用户信息
+ * @param name
+ * */
 export const getUserInfo = (name) => {
   return axios.request({
     url: 'user/user',
@@ -20,13 +37,10 @@ export const getUserInfo = (name) => {
   })
 }
 
-export const logout = (token) => {
-  return axios.request({
-    url: 'user/logout',
-    method: 'post'
-  })
-}
-
+/**
+ * 添加用户
+ * @param data
+ * */
 export const addUser = (data) => {
   return axios.request({
     url: 'user/add',
@@ -35,11 +49,28 @@ export const addUser = (data) => {
   })
 }
 
+/**
+ * 修改用户
+ * @param data
+ * */
 export const updataUser = (data) => {
   return axios.request({
     url: 'user/updata',
     method: 'post',
     data: data
+  })
+}
+
+/**
+ * 上传用户头像
+ * @param params formData对象
+ * */
+export const updataImage = (formData) => {
+  return axios.request({
+    url: 'user/image',
+    method: 'post',
+    data: formData,
+    headers: {'Content-Type':'multipart/form-data'}
   })
 }
 

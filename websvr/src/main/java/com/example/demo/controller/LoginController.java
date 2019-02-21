@@ -1,8 +1,8 @@
 package com.example.demo.controller;
 
-import com.example.demo.domain.LoginUser;
+import com.example.demo.domain.User;
 import com.example.demo.model.response.Response;
-import com.example.demo.service.LoginUserService;
+import com.example.demo.service.UserService;
 import com.example.demo.service.RedisService;
 import com.example.demo.util.RedisUtils;
 import com.example.demo.util.WebUtils;
@@ -23,7 +23,7 @@ import java.util.Map;
 @RequestMapping(value = "/user")
 public class LoginController {
     @Autowired
-    private LoginUserService loginUserService;
+    private UserService userService;
     @Autowired
     private RedisService redisService;
     @Autowired
@@ -31,7 +31,7 @@ public class LoginController {
 
     // 获取登录用户
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public Map<String, Object> post(@RequestBody LoginUser params, HttpServletRequest req, HttpServletResponse res)
+    public Map<String, Object> post(@RequestBody User params, HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         Map<String, Object> result = new HashMap<>();
         System.out.println("params:" + params);
@@ -39,7 +39,7 @@ public class LoginController {
         String pass = params.getPass();
 
         // 数据库中存储的用户
-        LoginUser user = loginUserService.getUserByName(name);
+        User user = userService.getUserByName(name);
         if (user != null) {
             System.out.println("user:" + user);
             String userName = user.getName();
@@ -50,7 +50,8 @@ public class LoginController {
                 String token = WebUtils.makeId();
                 try {
                     // redis存储token，注意redis的写权限
-                    redisUtils.set(token,token);
+                    // key: token; value: uid
+                    redisUtils.set(token,uid);
                 } catch (Exception e) {
                     System.out.println(e);
                     // token存入mySql
