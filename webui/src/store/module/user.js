@@ -13,8 +13,8 @@ import { setToken, getToken, getUser, setUser } from '@/libs/util'
 
 export default {
   state: {
-    userName: getUser('userName'),
-    userId: getUser('uid'),
+    userName: getUser('userName') || '',
+    userId: getUser('uid') || '',
     avatorImgPath: '',
     token: getToken(),
     access: '',
@@ -106,7 +106,6 @@ export default {
     },
     // 获取用户相关信息 - 暂不用
     getUserInfo ({ state, commit }) {
-      console.log('=====================')
       return new Promise((resolve, reject) => {
         try {
           getUserInfo(state.token).then(res => {

@@ -10,10 +10,13 @@ export const setUser = (user) => {
 }
 
 export const getUser = (tag) => {
-  let user = JSON.parse(Cookies.get('user'))
-  let obj = tag ? user[tag] : user
-  if (obj) return obj
-  else return false
+  let u = Cookies.get('user')
+  if (u) {
+    let user = JSON.parse(u)
+    let obj = tag ? user[tag] : user
+    if (obj) return obj
+    else return false
+  } else return false
 }
 
 export const TOKEN_KEY = 'token'

@@ -140,7 +140,7 @@ public class UserController {
     public Response updataImg(@RequestParam("imageFiles") MultipartFile[] imageFiles, @RequestParam("uid") Integer uid) throws Exception {
         Response response = new Response();
         // 图片存储在file_path路径的user目录下
-        String pathTo = "\\userImg";
+        String pathTo = "";
         try {
             // 调用UploadController中的上传图片
             Response result = uploadController.saveImg(imageFiles, uid, pathTo);;

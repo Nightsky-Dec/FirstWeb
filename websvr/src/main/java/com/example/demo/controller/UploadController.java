@@ -7,6 +7,7 @@ import com.example.demo.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -29,7 +30,7 @@ public class UploadController {
      * @param imageFiles
      * @param uid
      * */
-    @RequestMapping(value = "/image")
+    @RequestMapping(value = "/image", method = RequestMethod.POST)
     public Response upload(@RequestParam("imageFiles") MultipartFile[] imageFiles, @RequestParam("uid") Integer uid) throws Exception{
         Response response = new Response();
         // 图片存储在file_path路径的image目录下
@@ -48,7 +49,9 @@ public class UploadController {
 
     /**
      * 存储图片
-     *
+     * @param imageFiles
+     * @param uid
+     * @param pathTo
      * */
     public Response saveImg(MultipartFile[] imageFiles, Integer uid, String pathTo) throws Exception {
         Response response = new Response();
@@ -69,8 +72,16 @@ public class UploadController {
                     i++;
                 }
             }
-            User user = userService.getUserByUid(uid);
+
             String str= String.join(",", path.toArray(new String[path.size()]));
+            if ("".equals(str)) { // 当下载文件目标不是图片时
+                System.out.println("目标不是图片类型！");
+                response.setStatus(0);
+                response.setMassage("文件上传失败，文件不是图片类型");
+                return response;
+            }
+
+            User user = userService.getUserByUid(uid);
             user.setAvator(str);
             try {
                 userService.updateUser(user);
